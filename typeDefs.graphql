@@ -1,0 +1,114 @@
+scalar DateTime
+
+type User {
+    githubLogin: ID!
+    name: String
+    avatar: String
+    postedPhotos: [Photo!]!
+    inPhotos: [Photo!]!
+}
+
+type Photo {
+    id: ID!
+    name: String!
+    url: String!
+    description: String
+    category: PhotoCategory!
+    postedBy: User!
+    taggedUsers: [User!]!
+    created: DateTime!
+}
+
+enum PhotoCategory {
+    SELFIE
+    PORTRAIT
+    ACTION
+    LANDSCAPE
+    GRAPHIC
+}
+
+enum WineRegions {
+        NAPA
+        SONOMA
+        DRYCREEK
+        RUSSIANRIVER
+        BOURDEAUX
+        WILLAMETTEVALLEY
+        CARNEROS
+    }
+input WineryInput {
+        name: String!
+    }
+   
+type Winery {
+        id: ID!
+        name: String!
+        description: String
+        streetAddress: String
+        streetAddressTwo: String
+        city: String
+        state: String
+        postalCode: String
+        contactPhone: String
+        contactEmail: String
+        url: String
+        hours: String
+        tastingByAppt: Boolean
+        varietals: [String]
+        wineClub: Boolean
+        twitter: String
+        facebook: String
+        wineRegion: WineRegions
+        mapLocation: Location
+        createdAt: DateTime!
+        updatedAt: DateTime!
+}
+
+type WineMap {
+        id: ID!
+        title: String!
+        scheduleDate: String
+        startTime: DateTime
+        endTime: DateTime
+        mapURL: String
+        wineries: [Winery!]!
+        wineRegion: WineRegions
+        startLocation: Location
+        endLocation: Location
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Location {
+    lat: Float
+    lng: Float
+}
+
+input PostPhotoInput {
+    name: String!
+    category: PhotoCategory = PORTRAIT
+    description: String
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type Query {
+    me: User
+    totalPhotos: Int!
+    allPhotos: [Photo!]!
+    Photo(id: ID!): Photo
+    totalUsers: Int!
+    allUsers: [User!]!
+    User(login: ID!): User
+}
+
+type Mutation {
+    postPhoto(input: PostPhotoInput!): Photo!
+    tagPhoto(githubLogin:ID! photoID:ID!): Photo!
+    githubAuth(code: String!): AuthPayload!
+    addFakeUsers(count: Int=1): [User!]!
+    fakeUserAuth(githubLogin: ID!): AuthPayload!
+}
